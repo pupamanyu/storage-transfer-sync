@@ -97,7 +97,7 @@ if __name__ == '__main__':
     project_id = args.project_id
     kickoff_delay_minutes = int(args.kickoff_delay_minutes)
     transfer_stop_minutes = int(args.transfer_stop_minutes)
-    elapsed_last_modification = args.elapsed_last_modification
+    elapsed_last_modification = int(args.elapsed_last_modification)
     kickoff_datetime = now + datetime.timedelta(minutes=kickoff_delay_minutes)
     include_prefix = args.include_prefix
     transfer_stop_datetime = kickoff_datetime + datetime.timedelta(minutes=transfer_stop_minutes)

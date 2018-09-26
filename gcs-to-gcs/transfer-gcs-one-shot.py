@@ -69,6 +69,21 @@ def main(description, project_id, kickoff_datetime, transfer_stop_datetime,
     print('Returned transferJob: {}'.format(
         json.dumps(result, indent=4)))
 
+def check_sync(storagetransfer, job_submit_result):
+    project_id = job_submit_result['projectId']
+    job_name = job_submit_result['name']
+    filterString = (
+        '{{"project_id": "{project_id}", '
+        '"job_names": ["{job_name}"]}}'
+    ).format(project_id=project_id, job_name=job_name)
+
+    result = storagetransfer.transferOperations().list(
+        name="transferOperations",
+        filter=filterString).execute()
+    print('Result of transferOperations/list: {}'.format(
+        json.dumps(result, indent=4, sort_keys=True)))
+    return result
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -90,18 +105,19 @@ if __name__ == '__main__':
     project_id = args.project_id
     source_bucket = args.source_bucket
     sink_bucket = args.sink_bucket
+    elapsed_last_modification = int(args.elapsed_last_modification)
     kickoff_delay_minutes = int(args.kickoff_delay_minutes)
     transfer_stop_minutes = int(args.transfer_stop_minutes)
     kickoff_datetime = now + datetime.timedelta(minutes=kickoff_delay_minutes)
     include_prefix = args.include_prefix
     transfer_stop_datetime = kickoff_datetime + datetime.timedelta(minutes=transfer_stop_minutes)
 
-    main(
+    result = main(
         description,
         project_id,
         kickoff_datetime,
         transfer_stop_datetime,
-        elaspsed_last_modification,
+        elapsed_last_modification,
         source_bucket,
         sink_bucket,
         include_prefix)
